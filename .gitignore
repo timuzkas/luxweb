@@ -1,0 +1,13 @@
+build/
+out/
+dist-build/
+
+.codex/
+.agents/
+
+examples/starter/var/*.db
+examples/starter/var/*.sqlite
+examples/starter/var/*.sqlite3
+
+.DS_Store
+Thumbs.db

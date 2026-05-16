@@ -1,0 +1,139 @@
+.hero {
+    min-height: 380px;
+    display: grid;
+    align-items: center;
+    background:
+        linear-gradient(
+            120deg,
+            rgba(37, 99, 235, 0.1),
+            rgba(15, 118, 110, 0.12)
+        ),
+        var(--lux-surface);
+}
+
+.hero {
+    padding: 7rem 0 5rem;
+    opacity: 0;
+    animation: rise 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.hero h1 {
+    font-size: clamp(2.2rem, 5.5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+    margin-bottom: 1.5rem;
+}
+
+.lead {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--lux-muted);
+    max-width: 55ch;
+    margin-bottom: 2.5rem;
+}
+
+.actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    padding: 4rem 0 6rem;
+    border-top: 1px solid var(--lux-line);
+    opacity: 0;
+    animation: rise 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.12s forwards;
+}
+
+.features h2 {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+}
+
+.features p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--lux-muted);
+    margin: 0;
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .features {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        padding: 3rem 0;
+    }
+    .hero {
+        padding: 4rem 0 3rem;
+    }
+}
+
+.feature-grid {
+    margin-top: 16px;
+}
+
+.feature-grid h2 {
+    margin-top: 0;
+}
+
+.lux-nav form {
+    margin: 0;
+}
+
+.dashboard-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.state-list {
+    display: grid;
+    gap: 10px;
+    margin: 16px 0;
+}
+
+.state-list div {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 12px;
+}
+
+.state-list dt {
+    color: var(--lux-muted);
+    font-weight: 700;
+}
+
+.state-list dd {
+    margin: 0;
+}
+
+.counter {
+    display: inline-grid;
+    grid-template-columns: 40px 64px 40px;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0 18px;
+}
+
+.counter strong {
+    font-size: 28px;
+    text-align: center;
+}

@@ -1,0 +1,48 @@
+{% extends "../layouts/base.html" %}
+{% block content %}
+<main class="lux-panel">
+  <p class="eyebrow">Protected page</p>
+  <h1>Welcome, {{ current_user.name }}</h1>
+  <p class="lux-muted">This page is guarded by <code>auth.require_user</code>.</p>
+  <section class="dashboard-grid">
+    <article>
+      <h2>Browser user store</h2>
+      <p class="lux-muted" data-lux-show="!user.ready">Loading user state...</p>
+      <dl class="state-list">
+        <div>
+          <dt>Authenticated</dt>
+          <dd data-lux-text="user.authenticated">false</dd>
+        </div>
+        <div>
+          <dt>Name</dt>
+          <dd data-lux-text="user.user.name">{{ current_user.name }}</dd>
+        </div>
+        <div>
+          <dt>Email</dt>
+          <dd data-lux-text="user.user.email">{{ current_user.email }}</dd>
+        </div>
+      </dl>
+      <pre id="user-store-state">Loading...</pre>
+    </article>
+    <article>
+      <h2>Local dashboard state</h2>
+      <div class="counter">
+        <button type="button" data-lux-on:click="dashboard.decrement">-</button>
+        <strong data-lux-text="dashboard.count">0</strong>
+        <button type="button" data-lux-on:click="dashboard.increment">+</button>
+      </div>
+      <label>
+        Note
+        <input data-lux-model="dashboard.note" autocomplete="off">
+      </label>
+      <p class="lux-muted">Current note: <span data-lux-text="dashboard.note"></span></p>
+      <button class="lux-button secondary" type="button" data-lux-on:click="dashboard.reset">Reset</button>
+    </article>
+  </section>
+</main>
+<script>
+window.addEventListener('lux:user', (event) => {
+  document.querySelector('#user-store-state').textContent = JSON.stringify(event.detail, null, 2);
+});
+</script>
+{% endblock %}

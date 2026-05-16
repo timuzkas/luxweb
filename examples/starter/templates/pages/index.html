@@ -1,0 +1,39 @@
+{% extends "../layouts/base.html" %} {% block content %}
+<main class="home">
+    <section class="hero">
+        <h1>
+            Fast native routes, HTML views, JSON APIs, and auth in one small
+            framework.
+        </h1>
+        <p class="lead">
+            This starter app uses Crow, Inja, SQLite, OpenSSL, and a tiny
+            browser user store.
+        </p>
+        <div class="actions">
+            <a class="lux-button" href="/signup">Create account</a>
+            <a class="lux-button secondary" href="/dashboard">Open dashboard</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <article>
+            <h2>Pages</h2>
+            <p>
+                Templates render on the server with shared layout and app
+                overrides.
+            </p>
+        </article>
+        <article>
+            <h2>API</h2>
+            <p>JSON responses live beside page routes with the same context.</p>
+        </article>
+        <article>
+            <h2>User Store</h2>
+            <p>
+                SQLite stores users and sessions. The browser store mirrors safe
+                profile state.
+            </p>
+        </article>
+    </section>
+</main>
+{% endblock %}

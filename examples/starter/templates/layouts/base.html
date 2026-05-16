@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="/lux/lux.css">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script defer src="/lux/lux.js"></script>
+  <script defer src="/assets/lux-user.js"></script>
+</head>
+<body>
+  <div class="lux-shell">
+    <nav class="lux-nav">
+      <a class="lux-brand" href="/">luxweb</a>
+      <div class="lux-nav__links">
+        <a href="/api/health">API</a>
+        <a href="/data/health">Data API</a>
+        <a href="/about">About</a>
+        {% if current_user %}
+          <a href="/dashboard">Dashboard</a>
+          <form method="post" action="/logout">
+            <button class="lux-button secondary" type="submit">Log out</button>
+          </form>
+        {% else %}
+          <a href="/login">Log in</a>
+          <a class="lux-button" href="/signup">Sign up</a>
+        {% endif %}
+      </div>
+    </nav>
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>
