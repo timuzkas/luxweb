@@ -2,12 +2,12 @@
 <main class="home">
     <section class="hero">
         <h1>
-            Fast native routes, HTML views, JSON APIs, and auth in one small
+            Native routes, HTML views, JSON APIs, and auth in one small
             framework.
         </h1>
         <p class="lead">
-            This starter app uses Crow, Inja, SQLite, OpenSSL, and a tiny
-            browser user store.
+            A minimal starter built with Crow, Inja, SQLite, OpenSSL, and a
+            small browser user store.
         </p>
         <div class="actions">
             <a class="lux-button" href="/signup">Create account</a>
@@ -15,25 +15,26 @@
         </div>
     </section>
 
-    <section class="features">
-        <article>
+    <section class="summary">
+        <p>
+            Server-rendered pages, data endpoints, and auth flow all live in
+            one small app.
+        </p>
+    </section>
+
+    <section class="details" aria-label="Starter overview">
+        <div>
             <h2>Pages</h2>
-            <p>
-                Templates render on the server with shared layout and app
-                overrides.
-            </p>
-        </article>
-        <article>
+            <p>Shared templates keep routes and views straightforward.</p>
+        </div>
+        <div>
             <h2>API</h2>
-            <p>JSON responses live beside page routes with the same context.</p>
-        </article>
-        <article>
-            <h2>User Store</h2>
-            <p>
-                SQLite stores users and sessions. The browser store mirrors safe
-                profile state.
-            </p>
-        </article>
+            <p>JSON endpoints sit beside page routes with the same context.</p>
+        </div>
+        <div>
+            <h2>State</h2>
+            <p>SQLite handles users and sessions while the browser mirrors safe profile data.</p>
+        </div>
     </section>
 </main>
 {% endblock %}

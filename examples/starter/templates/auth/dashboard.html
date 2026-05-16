@@ -1,7 +1,6 @@
 {% extends "../layouts/base.html" %}
 {% block content %}
 <main class="lux-panel">
-  <p class="eyebrow">Protected page</p>
   <h1>Welcome, {{ current_user.name }}</h1>
   <p class="lux-muted">This page is guarded by <code>auth.require_user</code>.</p>
   <section class="dashboard-grid">
