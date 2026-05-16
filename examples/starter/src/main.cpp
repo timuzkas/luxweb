@@ -16,24 +16,38 @@ std::uint16_t parse_port(const std::string& value) {
   return static_cast<std::uint16_t>(port);
 }
 
-std::uint16_t configured_port(int argc, char** argv) {
+struct ServerConfig {
+  std::string host = "127.0.0.1";
   std::uint16_t port = 18080;
+};
+
+ServerConfig configured_server(int argc, char** argv) {
+  ServerConfig config;
+  if (const char* env = std::getenv("LUXWEB_HOST")) {
+    config.host = env;
+  } else if (const char* env = std::getenv("HOST")) {
+    config.host = env;
+  }
   if (const char* env = std::getenv("LUXWEB_PORT")) {
-    port = parse_port(env);
+    config.port = parse_port(env);
   } else if (const char* env = std::getenv("PORT")) {
-    port = parse_port(env);
+    config.port = parse_port(env);
   }
   for (int i = 1; i < argc; ++i) {
     std::string arg = argv[i];
-    if ((arg == "--port" || arg == "-p") && i + 1 < argc) {
-      port = parse_port(argv[++i]);
+    if ((arg == "--host" || arg == "-H") && i + 1 < argc) {
+      config.host = argv[++i];
+    } else if (arg.starts_with("--host=")) {
+      config.host = arg.substr(7);
+    } else if ((arg == "--port" || arg == "-p") && i + 1 < argc) {
+      config.port = parse_port(argv[++i]);
     } else if (arg.starts_with("--port=")) {
-      port = parse_port(arg.substr(7));
+      config.port = parse_port(arg.substr(7));
     } else if (i == 1 && !arg.starts_with('-')) {
-      port = parse_port(arg);
+      config.port = parse_port(arg);
     }
   }
-  return port;
+  return config;
 }
 
 }  // namespace
@@ -48,7 +62,9 @@ int main(int argc, char** argv) {
   }
 
   lux::App app;
-  app.port(configured_port(argc, argv));
+  const auto server = configured_server(argc, argv);
+  app.host(server.host);
+  app.port(server.port);
   app.add_template_path(root / "examples/starter/templates");
   app.static_files("/assets", root / "examples/starter/public");
 

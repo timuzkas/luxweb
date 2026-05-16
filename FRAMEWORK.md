@@ -16,6 +16,7 @@ Create an app, register templates, routes, static files, and run it:
 
 ```cpp
 lux::App app;
+app.host("127.0.0.1");
 app.add_template_path("templates");
 app.pages("templates/pages");
 app.static_files("/assets", "public");
@@ -135,16 +136,25 @@ The output executable is written to the selected build directory. For scaffolded
 
 Older apps need the generated CMake hook before `luxweb build` can embed assets. New apps created by `luxweb new <name>` include it automatically.
 
-`luxweb serve` runs an already-built app executable. It is useful for filesystem-backed builds, local process launch, or running a binary built by another command. Inside a Luxweb project, it reads `luxweb.toml` and runs `build/<name> <port>`. It can also run an explicit binary:
+`luxweb serve` runs an already-built app executable. It is useful for filesystem-backed builds, local process launch, or running a binary built by another command. Inside a Luxweb project, it reads `luxweb.toml` and runs `build/<name> --host <host> --port <port>`. It can also run an explicit binary:
 
 ```sh
 luxweb serve
 luxweb serve ./build/my_app 3000
 ```
 
-Scaffolded apps accept port configuration from these sources, later sources overriding earlier ones:
+Scaffolded apps bind to `127.0.0.1` by default.
 
-- `luxweb.toml` is used by the CLI when launching via `luxweb dev` or `luxweb serve`
+Host configuration sources:
+
+- `luxweb.toml` `host` is used by the CLI when launching via `luxweb dev`
+- `LUXWEB_HOST`
+- `HOST`
+- `--host`, `--host=0.0.0.0`, or `-H 0.0.0.0`
+
+Port configuration sources:
+
+- `luxweb.toml` `port` is used by the CLI when launching via `luxweb dev` or `luxweb serve`
 - `LUXWEB_PORT`
 - `PORT`
 - positional executable argument, for example `./build/my_app 3000`

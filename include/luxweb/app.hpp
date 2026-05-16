@@ -42,6 +42,7 @@ class App {
   void set_theme(StyleTheme theme);
   void enable_dev_reload(ReloadHub* hub);
   void port(std::uint16_t port);
+  void host(std::string host);
   void run();
 
   [[nodiscard]] crow::SimpleApp& crow();
@@ -53,6 +54,7 @@ class App {
   std::vector<Middleware> middleware_;
   StyleTheme theme_;
   std::uint16_t port_ = 18080;
+  std::string host_ = "127.0.0.1";
   ReloadHub* reload_hub_ = nullptr;
 
   void route(std::string method, std::string path, Handler handler);

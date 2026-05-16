@@ -270,9 +270,13 @@ void App::port(std::uint16_t port) {
   port_ = port;
 }
 
+void App::host(std::string host) {
+  host_ = std::move(host);
+}
+
 void App::run() {
-  spdlog::info("luxweb listening on http://127.0.0.1:{}", port_);
-  app_.port(port_).multithreaded().run();
+  spdlog::info("luxweb listening on http://{}:{}", host_, port_);
+  app_.bindaddr(host_).port(port_).multithreaded().run();
 }
 
 crow::SimpleApp& App::crow() {

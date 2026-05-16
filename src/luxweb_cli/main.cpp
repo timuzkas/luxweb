@@ -19,6 +19,7 @@ namespace {
 
 struct ProjectConfig {
   std::string name;
+  std::string host = "127.0.0.1";
   std::uint16_t port = 18080;
 };
 
@@ -98,6 +99,8 @@ std::optional<ProjectConfig> read_config(const fs::path& root) {
     }
     if (key == "name") {
       config.name = value;
+    } else if (key == "host") {
+      config.host = value;
     } else if (key == "port") {
       config.port = static_cast<std::uint16_t>(std::stoi(value));
     }
@@ -247,6 +250,7 @@ int new_app(const std::string& name) {
 
   write_file(root / "luxweb.toml",
              "name = \"" + target_name + "\"\n"
+             "host = \"127.0.0.1\"\n"
              "port = 18080\n");
   write_file(root / "CMakeLists.txt",
              "cmake_minimum_required(VERSION 3.24)\n\n"
@@ -308,29 +312,44 @@ int new_app(const std::string& name) {
              "  }\n"
              "  return static_cast<std::uint16_t>(port);\n"
              "}\n\n"
-             "std::uint16_t configured_port(int argc, char** argv) {\n"
+             "struct ServerConfig {\n"
+             "  std::string host = \"127.0.0.1\";\n"
              "  std::uint16_t port = 18080;\n"
+             "};\n\n"
+             "ServerConfig configured_server(int argc, char** argv) {\n"
+             "  ServerConfig config;\n"
+             "  if (const char* env = std::getenv(\"LUXWEB_HOST\")) {\n"
+             "    config.host = env;\n"
+             "  } else if (const char* env = std::getenv(\"HOST\")) {\n"
+             "    config.host = env;\n"
+             "  }\n"
              "  if (const char* env = std::getenv(\"LUXWEB_PORT\")) {\n"
-             "    port = parse_port(env);\n"
+             "    config.port = parse_port(env);\n"
              "  } else if (const char* env = std::getenv(\"PORT\")) {\n"
-             "    port = parse_port(env);\n"
+             "    config.port = parse_port(env);\n"
              "  }\n"
              "  for (int i = 1; i < argc; ++i) {\n"
              "    std::string arg = argv[i];\n"
-             "    if ((arg == \"--port\" || arg == \"-p\") && i + 1 < argc) {\n"
-             "      port = parse_port(argv[++i]);\n"
+             "    if ((arg == \"--host\" || arg == \"-H\") && i + 1 < argc) {\n"
+             "      config.host = argv[++i];\n"
+             "    } else if (arg.starts_with(\"--host=\")) {\n"
+             "      config.host = arg.substr(7);\n"
+             "    } else if ((arg == \"--port\" || arg == \"-p\") && i + 1 < argc) {\n"
+             "      config.port = parse_port(argv[++i]);\n"
              "    } else if (arg.starts_with(\"--port=\")) {\n"
-             "      port = parse_port(arg.substr(7));\n"
+             "      config.port = parse_port(arg.substr(7));\n"
              "    } else if (i == 1 && !arg.starts_with('-')) {\n"
-             "      port = parse_port(arg);\n"
+             "      config.port = parse_port(arg);\n"
              "    }\n"
              "  }\n"
-             "  return port;\n"
+             "  return config;\n"
              "}\n\n"
              "}  // namespace\n\n"
              "int main(int argc, char** argv) {\n"
              "  lux::App app;\n"
-             "  app.port(configured_port(argc, argv));\n"
+             "  const auto server = configured_server(argc, argv);\n"
+             "  app.host(server.host);\n"
+             "  app.port(server.port);\n"
              "#ifdef LUXWEB_EMBEDDED_APP\n"
              "  luxweb_generated::register_embedded_assets(app);\n"
              "#else\n"
@@ -476,9 +495,9 @@ int build(int argc, char** argv) {
 int serve(int argc, char** argv) {
   if (argc >= 3) {
     std::string command = shell_quote(std::string(argv[2]));
-    if (argc > 3) {
+    for (int i = 3; i < argc; ++i) {
       command += " ";
-      command += argv[3];
+      command += shell_quote(std::string(argv[i]));
     }
     return run_command(command);
   }
@@ -488,7 +507,8 @@ int serve(int argc, char** argv) {
     std::cerr << "Or run inside a Luxweb project with luxweb.toml.\n";
     return 2;
   }
-  return run_command(shell_quote(fs::current_path() / "build" / config->name) + " " + std::to_string(config->port));
+  return run_command(shell_quote(fs::current_path() / "build" / config->name) + " --host " + shell_quote(config->host) +
+                     " --port " + std::to_string(config->port));
 }
 
 int dev() {
@@ -503,8 +523,9 @@ int dev() {
   if (status != 0) {
     return status;
   }
-  std::cout << "Starting " << config->name << " at http://127.0.0.1:" << config->port << "\n";
-  return run_command(shell_quote(fs::current_path() / "build" / config->name) + " " + std::to_string(config->port));
+  std::cout << "Starting " << config->name << " at http://" << config->host << ":" << config->port << "\n";
+  return run_command(shell_quote(fs::current_path() / "build" / config->name) + " --host " + shell_quote(config->host) +
+                     " --port " + std::to_string(config->port));
 }
 
 }  // namespace
